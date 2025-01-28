@@ -1,7 +1,7 @@
 # Ariel OS
 [![Build Status][build-badge]][build-info]
-[![Book][book-badge]][documentation-mdbook]
-[![Documentation][rustdoc-badge]][documentation-dev-rustdoc]
+[![Documentation][book-badge]][documentation-mdbook]
+[![API reference][rustdoc-badge]][documentation-api-rustdoc]
 [![Matrix][matrix-badge]][matrix-link]
 
 > Rust & RIOT combined for ergonomic embedded development
@@ -147,7 +147,7 @@ Thanks to all the people who already contributed!
 [build-info]: https://github.com/ariel-os/ariel-os/actions/workflows/main.yml
 [matrix-badge]: https://img.shields.io/badge/chat-Matrix-brightgreen.svg
 [matrix-link]: https://matrix.to/#/#ariel-os:matrix.org
-[book-badge]: https://img.shields.io/badge/Book-%F0%9F%93%94-blue
-[rustdoc-badge]: https://img.shields.io/badge/Documentation-%F0%9F%93%94-blue
+[book-badge]: https://img.shields.io/badge/Documentation-%F0%9F%93%94-blue
+[rustdoc-badge]: https://img.shields.io/badge/API_Reference-%F0%9F%93%94-blue
 [documentation-mdbook]: https://ariel-os.github.io/ariel-os/dev/docs/book/
-[documentation-dev-rustdoc]: https://ariel-os.github.io/ariel-os/dev/docs/api/
+[documentation-api-rustdoc]: https://ariel-os.github.io/ariel-os/dev/docs/api/

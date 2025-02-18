@@ -10,7 +10,8 @@ use sequential_storage::{
     map::{fetch_item, remove_item, store_item, Value},
 };
 
-pub use crate::error::Error;
+use crate::error::Error;
+
 pub use crate::postcard_value::PostcardValue;
 pub use serde::{Deserialize, Serialize};
 

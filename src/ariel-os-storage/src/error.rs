@@ -1,22 +1,19 @@
 //! Error types for storage
-
-#![deny(missing_docs)]
-#![deny(clippy::pedantic)]
 use arrayvec::CapacityError;
 use embedded_storage_async::nor_flash::NorFlashError;
 use sequential_storage::Error as StorageError;
 
-/// Storage-related errors
+/// Storage-related errors.
 #[non_exhaustive]
 #[derive(Debug)]
 pub enum Error<S> {
-    /// Error from sequential-storage
+    /// Error from sequential-storage.
     SequentialStorage {
-        /// Exact sequential-storage error
+        /// Exact sequential-storage error.
         error: StorageError<S>,
     },
 
-    /// Provided key is too largo to serialize into storage
+    /// Provided key is too largo to serialize into storage.
     KeyTooLarge,
 }
 
@@ -38,8 +35,8 @@ where
 {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         match self {
-            Self::SequentialStorage { error } => write!(f, "Sequential Storage error: {error}"),
-            Self::KeyTooLarge => write!(f, "Key too large"),
+            Self::SequentialStorage { error } => write!(f, "sequential-storage error: {error}"),
+            Self::KeyTooLarge => write!(f, "key too large"),
         }
     }
 }

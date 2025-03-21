@@ -3,7 +3,7 @@
 use core::ops::Range;
 
 use arrayvec::ArrayString;
-use embedded_storage_async::nor_flash::{ErrorType, MultiwriteNorFlash, NorFlash};
+use embedded_storage_async::nor_flash::{MultiwriteNorFlash, NorFlash};
 use sequential_storage::{
     cache::NoCache,
     erase_all,
@@ -39,32 +39,26 @@ impl<F: NorFlash> Storage<F> {
     }
 
     /// Gets a [`Value`] from this [`Storage`] instance.
-    pub async fn get_raw<V: for<'d> Value<'d>>(
-        &mut self,
-        key: &str,
-    ) -> Result<Option<V>, Error<<F as ErrorType>::Error>> {
+    pub async fn get_raw<V: for<'d> Value<'d>>(&mut self, key: &str) -> Result<Option<V>, Error> {
         let key = ArrayString::<MAX_KEY_LEN>::from(key)?;
         let mut data_buffer = [0; DATA_BUFFER_SIZE];
 
-        Ok(fetch_item::<_, V, _>(
+        fetch_item::<_, V, _>(
             &mut self.flash,
             self.storage_range.clone(),
             &mut NoCache::new(),
             &mut data_buffer,
             &key,
         )
-        .await?)
+        .await
+        .map_err(Error::from)
     }
 
     /// Inserts a [`Value`] into this [`Storage`] instance.
-    pub async fn insert_raw<'d, V: Value<'d>>(
-        &mut self,
-        key: &str,
-        value: V,
-    ) -> Result<(), Error<<F as ErrorType>::Error>> {
+    pub async fn insert_raw<'d, V: Value<'d>>(&mut self, key: &str, value: V) -> Result<(), Error> {
         let key = ArrayString::<MAX_KEY_LEN>::from(key)?;
         let mut data_buffer = [0; DATA_BUFFER_SIZE];
-        Ok(store_item(
+        store_item(
             &mut self.flash,
             self.storage_range.clone(),
             &mut NoCache::new(),
@@ -72,17 +66,14 @@ impl<F: NorFlash> Storage<F> {
             &key,
             &value,
         )
-        .await?)
+        .await
+        .map_err(Error::from)
     }
 
     /// Stores a key-value pair into flash memory.
     ///
     /// It will overwrite the last value that has the same key.
-    pub async fn insert<'d, V>(
-        &mut self,
-        key: &str,
-        value: V,
-    ) -> Result<(), Error<<F as ErrorType>::Error>>
+    pub async fn insert<'d, V>(&mut self, key: &str, value: V) -> Result<(), Error>
     where
         V: Serialize + Deserialize<'d> + Into<PostcardValue<V>>,
     {
@@ -92,7 +83,7 @@ impl<F: NorFlash> Storage<F> {
     /// Gets the last stored value from the flash that is associated with the given key.
     ///
     /// If no value with the key is found, `None` is returned.
-    pub async fn get<V>(&mut self, key: &str) -> Result<Option<V>, Error<<F as ErrorType>::Error>>
+    pub async fn get<V>(&mut self, key: &str) -> Result<Option<V>, Error>
     where
         V: Serialize + for<'d> Deserialize<'d> + Into<PostcardValue<V>>,
     {
@@ -111,8 +102,10 @@ impl<F: NorFlash> Storage<F> {
     }
 
     /// Resets the flash in the entire flash range of this [`Storage`] instance.
-    pub async fn erase_all(&mut self) -> Result<(), Error<<F as ErrorType>::Error>> {
-        Ok(erase_all(&mut self.flash, self.storage_range.clone()).await?)
+    pub async fn erase_all(&mut self) -> Result<(), Error> {
+        erase_all(&mut self.flash, self.storage_range.clone())
+            .await
+            .map_err(Error::from)
     }
 }
 
@@ -128,16 +121,17 @@ impl<F: MultiwriteNorFlash> Storage<F> {
     /// All items in flash have to be read and deserialized to find the items with the key.
     /// This is unlikely to be cached well.
     /// </div>
-    pub async fn remove(&mut self, key: &str) -> Result<(), Error<<F as ErrorType>::Error>> {
+    pub async fn remove(&mut self, key: &str) -> Result<(), Error> {
         let key = ArrayString::<MAX_KEY_LEN>::from(key)?;
         let mut data_buffer = [0; DATA_BUFFER_SIZE];
-        Ok(remove_item(
+        remove_item(
             &mut self.flash,
             self.storage_range.clone(),
             &mut NoCache::new(),
             &mut data_buffer,
             &key,
         )
-        .await?)
+        .await
+        .map_err(Error::from)
     }
 }

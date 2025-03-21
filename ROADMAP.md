@@ -41,13 +41,6 @@ valuable information on memory usage and where it can be decreased.
 
 In the future this can also be extended with automated tuning and verification.
 
-## Application portability
-
-- [ ] 2. "portable" sensor reading
-       This needs a way (in build system, code) to easily add sensor drivers.
-- [x] "portable" simple network application
-- [ ] make 1. / 2. networked
-
 ## Hardware Support
 
 ### Native hosted mode

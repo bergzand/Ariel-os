@@ -9,7 +9,7 @@
 // TODO: overhaul errors
 #![expect(clippy::missing_errors_doc)]
 
-pub mod error;
+mod error;
 mod postcard_value;
 mod storage;
 

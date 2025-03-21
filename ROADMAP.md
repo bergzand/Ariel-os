@@ -113,9 +113,15 @@ Multiple mechanisms are possible for on-boarding a device
 #### TOFU
 
 Trust On First Use is an authentication scheme where a user must manually verify
-the device on first use.
+the device on first use. Its security level is not ideal, but it is simple to use
+across a wide range of device flashing mechanisms.
 
 #### Zero-Touch
+
+To avoid the security implications of TOFU, the existing connection between the
+programmer and the device can be utilized in some cases to already establish
+some mutual trust. Where available, this provides an even simpler onboarding
+experience than TOFU.
 
 #### Explicit configuration
 

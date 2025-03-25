@@ -18,8 +18,6 @@ manual.
 
 ## OS functionality
 
-### Unified Console
-
 ### Common Sensor Interface
 
 A consistent access method for sensors provides a convenient and portable way

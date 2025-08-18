@@ -1867,7 +1867,7 @@ builders:
     env:
       CARGO_ENV:
         # This ISR is unused on a naked board. Configured here for testing.
-        - CONFIG_SWI=LPUART1
+        - CONFIG_SWI=USART2
 
   - name: st-steval-mkboxpro
     parent: stm32u585ai

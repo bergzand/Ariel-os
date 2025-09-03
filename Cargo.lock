@@ -432,6 +432,7 @@ dependencies = [
  "embassy-nrf",
  "embassy-sync 0.6.2",
  "embedded-hal-async",
+ "embedded-io-async",
  "nrf-sdc",
  "paste",
  "portable-atomic",

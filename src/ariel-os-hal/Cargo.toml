@@ -64,6 +64,7 @@ spi = [
 ]
 
 uart = [
+  "ariel-os-nrf/uart",
 ]
 
 usb = [

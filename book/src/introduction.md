@@ -8,14 +8,14 @@ based on 32-bit microcontroller architectures (Cortex-M, RISC-V, and Xtensa).
 Many features provided by Ariel OS can individually be enabled or disabled at build time
 in order to minimize resource consumption.
 
-This is manual for Ariel OS. Other resources available are:
+This is the manual of Ariel OS. Other resources available are:
 
 - 🛠️ Reference documentation for Ariel OS can be found in the
   [API documentation](https://ariel-os.github.io/ariel-os/dev/docs/api/ariel_os/).
 - ⚙️  The git repository is available on
   [GitHub](https://github.com/ariel-os/ariel-os).
 - ✨ [Examples](https://github.com/ariel-os/ariel-os/tree/main/examples)
-  demonstrates various features of Ariel OS.
+  demonstrate various features of Ariel OS.
 - 🧪 A set of [test cases](https://github.com/ariel-os/ariel-os/tree/main/tests)
   further verifies the capabilities of Ariel OS.
 - 🚧 The [roadmap](https://github.com/ariel-os/ariel-os/issues/242)

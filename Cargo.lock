@@ -478,6 +478,7 @@ dependencies = [
  "embassy-rp",
  "embassy-sync 0.6.2",
  "embedded-hal-async",
+ "embedded-io-async",
  "paste",
  "static_cell",
  "trouble-host",

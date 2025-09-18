@@ -191,6 +191,7 @@ jobs:
                 external-interrupts,
                 i2c,
                 spi,
+                uart,
                 "
             -p ariel-os-rp
             --
@@ -322,6 +323,7 @@ jobs:
                     external-interrupts,
                     i2c,
                     spi,
+                    uart,
                     " \
                 -p ariel-os-rp
 

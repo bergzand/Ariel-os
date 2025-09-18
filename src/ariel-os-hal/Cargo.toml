@@ -75,7 +75,7 @@ spi = [
   "ariel-os-stm32/spi",
 ]
 
-uart = []
+uart = ["ariel-os-nrf/uart"]
 
 usb = [
   "ariel-os-esp/usb",

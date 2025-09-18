@@ -1923,7 +1923,7 @@ builders:
     env:
       CARGO_ENV:
         # This ISR is unused on a naked board. Configured here for testing.
-        - CONFIG_SWI=USART2
+        - CONFIG_SWI=USART1
 
   - name: native
     parent: ariel-os

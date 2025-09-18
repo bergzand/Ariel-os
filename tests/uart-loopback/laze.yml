@@ -1,3 +1,5 @@
 apps:
   - name: uart-loopback
-    context: []
+    context:
+      - rp2040
+      - rp235xa

@@ -12,10 +12,9 @@ use ariel_os::{
     },
     hal,
     time::Duration,
+    time::with_timeout,
     uart::Baud,
 };
-
-use ariel_os::reexports::embassy_time::WithTimeout;
 
 use embedded_io_async::{Read as _, Write as _};
 
@@ -44,10 +43,7 @@ async fn main(peripherals: pins::Peripherals) {
     uart.write_all(OUT.as_bytes()).await.unwrap();
     uart.flush().await.unwrap();
     info!("Wrote bytes");
-    let _ = uart
-        .read_exact(&mut in_)
-        .with_timeout(Duration::from_secs(5))
-        .await;
+    let _ = with_timeout(Duration::from_secs(5), uart.read_exact(&mut in_)).await;
 
     info!("Got: {}", Hex(in_));
     assert_eq!(OUT.as_bytes(), in_);

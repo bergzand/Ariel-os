@@ -35,18 +35,18 @@ ariel_os::hal::define_peripherals!(Peripherals {
 });
 
 // Side UART of Arduino v3 connector
-#[cfg(context = "nrf9160")]
+#[cfg(context = "nrf9151")]
 pub type TestUart<'a> = uart::SERIAL3<'a>;
-#[cfg(context = "nrf9160")]
+#[cfg(context = "nrf9151")]
 ariel_os::hal::define_peripherals!(Peripherals {
     uart_rx: P0_00,
     uart_tx: P0_01,
 });
 
 // Side UART of Arduino v3 connector
-#[cfg(context = "nrf9151")]
+#[cfg(context = "nrf9160")]
 pub type TestUart<'a> = uart::SERIAL3<'a>;
-#[cfg(context = "nrf9151")]
+#[cfg(context = "nrf9160")]
 ariel_os::hal::define_peripherals!(Peripherals {
     uart_rx: P0_00,
     uart_tx: P0_01,

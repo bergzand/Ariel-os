@@ -56,7 +56,7 @@ fn from_baudrate(baudrate: u32) -> Baudrate {
 #[derive(Clone)]
 #[non_exhaustive]
 pub struct Config {
-    /// The baud rate at which the interface should operate.
+    /// The baud rate at which UART should operate.
     pub baudrate: Baud,
     /// Parity mode used for the interface.
     pub parity: Parity,
@@ -92,6 +92,13 @@ macro_rules! define_uart_drivers {
                 uart: BufferedUarte<'d, peripherals::$peripheral, peripherals::$timer>,
             }
 
+            // Make this struct a compile-time-enforced singleton: having multiple statics
+            // defined with the same name would result in a compile-time error.
+            paste::paste! {
+                #[allow(dead_code)]
+                static [<PREVENT_MULTIPLE_ $peripheral>]: () = ();
+            }
+
             impl<'d> $peripheral<'d> {
                 /// Returns a driver implementing [`embedded-io`] for this Uart
                 /// peripheral.
@@ -104,12 +111,6 @@ macro_rules! define_uart_drivers {
                     tx_buffer: &'d mut [u8],
                     config: Config,
                 ) -> Uart<'d> {
-                    // Make this struct a compile-time-enforced singleton: having multiple statics
-                    // defined with the same name would result in a compile-time error.
-                    paste::paste! {
-                        #[allow(dead_code)]
-                        static [<PREVENT_MULTIPLE_ $peripheral>]: () = ();
-                    }
 
                     let mut uart_config = embassy_nrf::uarte::Config::default();
                     let baudrate: u32 = config.baudrate.into();
@@ -191,7 +192,7 @@ define_uart_drivers!(
 
 #[doc(hidden)]
 pub fn init(peripherals: &mut crate::OptionalPeripherals) {
-    // Take all SPI peripherals and do nothing with them.
+    // Take all UART peripherals and do nothing with them.
     cfg_if::cfg_if! {
         if #[cfg(context = "nrf52832")] {
             let _ = peripherals.UARTE0.take().unwrap();

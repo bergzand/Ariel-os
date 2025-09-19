@@ -3,21 +3,21 @@
 /// Common UART baud rates.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum Baud {
-    /// Custom baud rate
+    /// Custom baud rate.
     Baud(u32),
-    /// 2400 bauds,
+    /// 2400 bauds.
     _2400,
-    /// 4800 bauds
+    /// 4800 bauds.
     _4800,
-    /// 9600 bauds
+    /// 9600 bauds.
     _9600,
-    /// 19200 bauds
+    /// 19200 bauds.
     _19200,
-    /// 38400 bauds
+    /// 38400 bauds.
     _34800,
-    /// 57600 bauds
+    /// 57600 bauds.
     _57600,
-    /// 115200 bauds
+    /// 115200 bauds.
     _115200,
 }
 
@@ -65,7 +65,7 @@ impl defmt::Format for Baud {
     }
 }
 
-/// UART parity.
+/// Parity bit.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum Parity {
     /// No parity bit.

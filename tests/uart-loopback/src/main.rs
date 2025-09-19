@@ -11,8 +11,7 @@ use ariel_os::{
         log::{Hex, info},
     },
     hal,
-    time::Duration,
-    time::with_timeout,
+    time::{Duration, with_timeout},
     uart::Baud,
 };
 
@@ -38,15 +37,15 @@ async fn main(peripherals: pins::Peripherals) {
     );
 
     const OUT: &str = "Test Message";
-    let mut in_ = [0u8; OUT.len()];
+    let mut input = [0u8; OUT.len()];
 
     uart.write_all(OUT.as_bytes()).await.unwrap();
     uart.flush().await.unwrap();
     info!("Wrote bytes");
-    let _ = with_timeout(Duration::from_secs(5), uart.read_exact(&mut in_)).await;
+    let _ = with_timeout(Duration::from_secs(5), uart.read_exact(&mut input)).await;
 
-    info!("Got: {}", Hex(in_));
-    assert_eq!(OUT.as_bytes(), in_);
+    info!("Got: {}", Hex(input));
+    assert_eq!(OUT.as_bytes(), input);
     info!("Test passed!");
 
     exit(ExitCode::SUCCESS);

@@ -2,11 +2,11 @@
 
 ## About
 
-This application tests the UART peripheral via an external loopback wire
+This application tests the UART peripheral via an external loopback wire.
 
 ## How to run
 
-1. Ensure a wire is present between the TX and RX pins
+1. Ensure a wire is present between the TX and RX pins.
 2. In this directory, run:
 
     laze build -b nrf52840dk run

@@ -185,7 +185,7 @@ define_uart_drivers!(
 define_uart_drivers!(
    SERIAL3 => SERIAL3 + TIMER2 + PPI_CH18 + PPI_CH19 + PPI_GROUP5,
 );
-#[cfg(context = "nrf91")]
+#[cfg(any(context = "nrf9151", context = "nrf9160"))]
 define_uart_drivers!(
    SERIAL3 => SERIAL3 + TIMER2 + PPI_CH14 + PPI_CH15 + PPI_GROUP5,
 );
@@ -230,7 +230,7 @@ pub fn init(peripherals: &mut crate::OptionalPeripherals) {
             let _ = peripherals.PPI_CH18.take().unwrap();
             let _ = peripherals.PPI_CH19.take().unwrap();
             let _ = peripherals.PPI_GROUP5.take().unwrap();
-        } else if #[cfg(context = "nrf91")] {
+        } else if #[cfg(any(context = "nrf9151", context = "nrf9160"))] {
             let _ = peripherals.SERIAL3.take().unwrap();
             let _ = peripherals.TIMER2.take().unwrap();
             let _ = peripherals.PPI_CH14.take().unwrap();

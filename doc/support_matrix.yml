@@ -64,7 +64,7 @@ chips:
       hwrng: supported
       i2c_controller: not_currently_supported
       spi_main: not_currently_supported
-      uart: supported
+      uart: not_currently_supported
       logging: supported
       storage: not_currently_supported
       wifi: not_available

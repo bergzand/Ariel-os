@@ -66,6 +66,13 @@ macro_rules! define_uart_drivers {
                 uart: BufferedUart<'d, peripherals::$peripheral>,
             }
 
+            // Make this struct a compile-time-enforced singleton: having multiple statics
+            // defined with the same name would result in a compile-time error.
+            paste::paste! {
+                #[allow(dead_code)]
+                static [<PREVENT_MULTIPLE_ $peripheral>]: () = ();
+            }
+
             impl<'d> $peripheral<'d> {
                 /// Returns a driver implementing embedded-io traits for this Uart
                 /// peripheral.
@@ -133,7 +140,7 @@ define_uart_drivers!(
 pub fn init(peripherals: &mut crate::OptionalPeripherals) {
     // Take all UART peripherals and do nothing with them.
     cfg_if::cfg_if! {
-        if #[cfg(any(context = "rp2040", context = "235xa"))] {
+        if #[cfg(any(context = "rp2040", context = "rp235xa"))] {
             let _ = peripherals.UART0.take().unwrap();
             let _ = peripherals.UART1.take().unwrap();
         } else {

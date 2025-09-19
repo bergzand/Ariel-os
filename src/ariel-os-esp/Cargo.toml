@@ -17,7 +17,7 @@ embassy-executor = { workspace = true, default-features = false }
 embassy-time = { workspace = true, optional = true }
 embedded-hal = { workspace = true }
 embedded-hal-async = { workspace = true }
-embedded-io-async = { workspace = true }
+embedded-io-async = { workspace = true, optional = true }
 esp-alloc = { workspace = true, default-features = false, optional = true }
 esp-hal = { workspace = true, default-features = false, features = [
   "optfield",
@@ -98,7 +98,7 @@ i2c = ["dep:fugit", "ariel-os-embassy-common/i2c"]
 spi = ["dep:embassy-embedded-hal", "dep:fugit", "ariel-os-embassy-common/spi"]
 
 ## Enables UART support.
-uart = ["ariel-os-embassy-common/uart"]
+uart = ["dep:embedded-io-async", "ariel-os-embassy-common/uart"]
 
 ## Enables threading support.
 threading = [

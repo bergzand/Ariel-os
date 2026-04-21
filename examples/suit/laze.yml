@@ -1,0 +1,4 @@
+apps:
+  - name: example-suit
+    selects:
+      - coap-client

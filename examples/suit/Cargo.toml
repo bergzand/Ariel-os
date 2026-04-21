@@ -1,0 +1,19 @@
+[package]
+name = "example-suit-client"
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+ariel-os = { path = "../../src/ariel-os" }
+ariel-os-boards = { path = "../../src/ariel-os-boards" }
+coap-handler-implementations = "0.6.1"
+coap-request = "0.2.0-alpha.2"
+coap-request-implementations = "0.1.0-alpha.4"
+cose_minicbor = { version = "0.1.1", default-features = false, features = ["es256", "p256", "sha2", "sha256"] }
+dress-up = { version = "0.1.0", default-features = false }
+embedded-nal-coap = { workspace = true }
+minicbor = { version = "2.2.1", default-features = false }
+
+[lints]
+workspace = true

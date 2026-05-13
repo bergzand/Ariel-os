@@ -17,6 +17,9 @@ linkme = { workspace = true }
 
 [build-dependencies]
 ld-memory = { workspace = true, features = ["build-rs"], optional = true }
+rommel = { workspace = true, features = ["serde"], optional = true }
+yaml_serde = { workspace = true, optional = true }
+serde = { workspace = true, optional = true }
 
 [target.'cfg(context = "cortex-m")'.dependencies]
 cortex-m = { workspace = true }
@@ -57,7 +60,7 @@ panic-printing = []
 _panic-handler = []
 single-core = ["cortex-m/critical-section-single-core"]
 multi-core = ["embassy-rp/critical-section-impl"]
-memory-x = ["dep:ld-memory"]
+memory-x = ["dep:ld-memory", "dep:rommel", "dep:yaml_serde", "dep:serde"]
 nrf91-modem = []
 
 # features needed for `cargo test`

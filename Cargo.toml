@@ -166,6 +166,7 @@ document-features = "0.2.8"
 fugit = { version = "0.3.7", default-features = false }
 heapless = { version = "0.9.1", default-features = false }
 ld-memory = { version = "0.2.9" }
+rommel = { path = "../rommel" }
 log = { version = "0.4.20", default-features = false }
 once_cell = { version = "1.21.3", default-features = false, features = [
   "critical-section",
@@ -190,6 +191,7 @@ futures-util = { version = "0.3.32", default-features = false }
 nrf-modem = { version = "0.10.2" }
 time = { version = "0.3.47", default-features = false }
 tinyrlibc = "0.5.0"
+yaml_serde = { version = "0.10.4" }
 
 [workspace.lints.rust]
 # rustc lints are documented here: https://doc.rust-lang.org/rustc/lints/listing/index.html

@@ -5,6 +5,14 @@ use std::path::PathBuf;
 #[allow(dead_code, reason = "only used when the feature is enabled")]
 const NRF91_MODEM_IPC_KB: u64 = 32;
 
+fn parse_dec_or_hex(input: String) -> Result<u64, std::num::ParseIntError> {
+    if let Some(hex) = input.strip_prefix("0x") {
+        u64::from_str_radix(hex, 16)
+    } else {
+        input.parse::<u64>()
+    }
+}
+
 fn main() {
     if !context("ariel-os") {
         // Platform-independent tooling.
@@ -77,6 +85,20 @@ fn main() {
 #[cfg(feature = "memory-x")]
 fn write_memoryx() {
     use ld_memory::{Memory, MemorySection};
+    let rom_start = parse_dec_or_hex(
+        std::env::var("CHIP_ROM_START_ADDRESS").expect("CHIP_ROM_START_ADDRESS env var not set"),
+    )
+    .expect("CHIP_ROM_START_ADDRESS is not a decimal or hex value");
+    let rom_page_size = parse_dec_or_hex(
+        std::env::var("CHIP_ROM_PAGE_SIZE_BYTES")
+            .expect("CHIP_ROM_PAGE_SIZE_BYTES env var not set"),
+    )
+    .expect("CHIP_ROM_PAGE_SIZE_BYTES is not a decimal or hex value");
+    let rom_page_count = std::env::var("CHIP_ROM_PAGE_COUNT")
+        .expect("CHIP_ROM_PAGE_COUNT env var not set")
+        .parse::<u64>()
+        .expect("CHIP_ROM_PAGE_COUNT is not a decimal number");
+
     let (ram, flash) = if context("nrf51822-xxaa") {
         (16, 256)
     } else if context("nrf52832") {
@@ -106,17 +128,20 @@ fn write_memoryx() {
     } else if cfg!(feature = "nrf91-modem") {
         (4096, 0x2000_0000 + NRF91_MODEM_IPC_KB * 1024, 0)
     } else {
-        (4096, 0x2000_0000, 0)
+        (4096, 0x2000_0000, 0x0)
     };
 
+    let chip =
+        rommel::chip::Chip::new_bytes(rom_page_size, rom_start, rom_page_size * rom_page_count)
+            .unwrap();
+    let mut flash = rommel::Memory::new(chip);
+
     // generate linker script
-    let memory = Memory::new()
-        .add_section(MemorySection::new("RAM", ram_base, ram * 1024))
-        .add_section(
-            MemorySection::new("FLASH", flash_base, flash * 1024)
-                .pagesize(pagesize)
-                .from_env(),
-        );
+    let memory = flash
+        .resolve_layout()
+        .unwrap()
+        .into_memory()
+        .add_section(MemorySection::new("RAM", ram_base, ram * 1024));
 
     #[cfg(feature = "nrf91-modem")]
     let memory = memory.add_section(MemorySection::new(

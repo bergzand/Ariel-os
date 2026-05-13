@@ -55,6 +55,7 @@ threading = ["dep:ariel-os-threads"]
 
 debug-channel = ["ariel-os-debug/debug-channel"]
 embedded-test = ["dep:ariel-os-macros", "dep:embedded-test"]
+embassy-boot = []
 executor-interrupt = []
 panic-printing = []
 _panic-handler = []

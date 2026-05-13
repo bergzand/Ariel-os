@@ -1,0 +1,11 @@
+---
+sections:
+  - name: bootloader
+    pages: 4
+    size: 20 KiB
+    address: 0
+  - name: bootloader_state
+    pages: 1
+  - name: DFU
+    maximize: true
+    relative-pages: 1

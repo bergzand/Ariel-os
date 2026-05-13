@@ -229,6 +229,9 @@ defmt-rtt = ["ariel-os-log/defmt-rtt"]
 esp-println = ["ariel-os-log/esp-println"]
 semihosting = ["ariel-os-debug/semihosting"]
 
+# Required by the linker
+embassy-boot = ["ariel-os-rt/embassy-boot"]
+
 net = ["ariel-os-embassy/net"]
 
 # ## Executor type selection for the (autostarted) main executor

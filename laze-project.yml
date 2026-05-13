@@ -2136,6 +2136,15 @@ modules:
         FEATURES:
           - ariel-os/nrf-radiocore-firmware-dect
 
+  - name: embassy-boot
+    help: build with embassy-boot as bootloader support
+    context:
+      - nrf
+    env:
+      global:
+        FEATURES:
+          - ariel-os/embassy-boot
+
 builders:
   # host builder (for housekeeping tasks)
   - name: host

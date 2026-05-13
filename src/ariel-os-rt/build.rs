@@ -135,6 +135,7 @@ fn write_memoryx() {
         rommel::chip::Chip::new_bytes(rom_page_size, rom_start, rom_page_size * rom_page_count)
             .unwrap();
     let mut flash = rommel::Memory::new(chip);
+    context_to_linker(&mut flash).expect("Unable to construct layout");
 
     // generate linker script
     let memory = flash
@@ -151,6 +152,35 @@ fn write_memoryx() {
     ));
 
     memory.to_cargo_outdir("memory.x").expect("wrote memory.x");
+}
+
+fn context_to_linker(flash: &mut rommel::Memory) -> Result<(), Box<dyn std::error::Error>> {
+    println!(
+        "CARGO_CFG_CONTEXT: {:?}",
+        std::env::var("CARGO_CFG_CONTEXT")
+    );
+    let app = rommel::section::Section::new("FLASH")
+        .unwrap()
+        .set_maximize(true);
+
+    #[cfg(feature = "embassy-boot")]
+    {
+        flash.add_section(app);
+        let layout = load_layout("embassy-boot.yaml")?;
+        flash.layout_mut().merge(layout);
+    }
+    #[cfg(not(feature = "embassy-boot"))]
+    flash.add_section(app.set_boot(true));
+    Ok(())
+}
+
+fn load_layout(target: &str) -> Result<rommel::layout::Layout, Box<dyn std::error::Error>> {
+    let path = std::env::var("ROMMEL_SNIPPET_DIR").expect("Linker snippet directory not set");
+    let target_path = std::path::Path::new(&path).join(target);
+    let reader = std::fs::File::open(&target_path)?;
+    let sections: rommel::layout::Layout = yaml_serde::from_reader(reader)?;
+    println!("cargo:rerun-if-changed={}", target_path.display());
+    Ok(sections)
 }
 
 /// Returns the first of the given contexts that is in the current `cfg` contexts.

@@ -3,9 +3,9 @@ sections:
   - name: bootloader
     pages: 4
     size: 20 KiB
-    address: 0
+    boot: true
   - name: bootloader_state
     pages: 1
   - name: DFU
     maximize: true
-    relative-pages: 1
+    relative_pages: 1

@@ -1,3 +1,5 @@
+#![allow(unsafe_code)]
+
 use ariel_os::log::*;
 use embassy_boot::{FirmwareUpdater, FirmwareUpdaterConfig};
 use embassy_embedded_hal::flash::partition::Partition;

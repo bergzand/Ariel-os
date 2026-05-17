@@ -1,0 +1,17 @@
+{
+    "manifest-version": 1,
+    "manifest-sequence-number": 7,
+    "components" : [
+        {
+            "install-id" : ["00"],
+            "install-digest": {
+                "algorithm-id": "sha256",
+                "digest-bytes": "b089c150b8926a5f4f63664519cdbc52fa1c99a8924d1f0fbf066df1a49fd5dd"
+            },
+            "uri": "suit-update.bin",
+            "vendor-id" : "019c9a95-f6cb-71a7-a0a6-aac148fc4743",
+            "class-id" : "019c9a96-347b-7d98-acc9-b90117f4a665",
+            "install-on-download" : true
+        }
+    ]
+}

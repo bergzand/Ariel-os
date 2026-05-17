@@ -23,6 +23,7 @@ subdirs:
   - minimal
   - power
   - random
+  - rustweek-demo
   - sensors-debug
   - storage
   - tcp-client

@@ -5,6 +5,7 @@ use std::path::PathBuf;
 #[allow(dead_code, reason = "only used when the feature is enabled")]
 const NRF91_MODEM_IPC_KB: u64 = 32;
 
+#[cfg(feature = "memory-x")]
 fn parse_dec_or_hex(input: String) -> Result<u64, std::num::ParseIntError> {
     if let Some(hex) = input.strip_prefix("0x") {
         u64::from_str_radix(hex, 16)
@@ -84,7 +85,7 @@ fn main() {
 /// Panics if called outside of a known laze context.
 #[cfg(feature = "memory-x")]
 fn write_memoryx() {
-    use ld_memory::{Memory, MemorySection};
+    use ld_memory::MemorySection;
     let rom_start = parse_dec_or_hex(
         std::env::var("CHIP_ROM_START_ADDRESS").expect("CHIP_ROM_START_ADDRESS env var not set"),
     )
@@ -99,7 +100,7 @@ fn write_memoryx() {
         .parse::<u64>()
         .expect("CHIP_ROM_PAGE_COUNT is not a decimal number");
 
-    let (ram, flash) = if context("nrf51822-xxaa") {
+    let (ram, _flash) = if context("nrf51822-xxaa") {
         (16, 256)
     } else if context("nrf52832") {
         (64, 256)
@@ -123,7 +124,7 @@ fn write_memoryx() {
         panic!("please set the MCU laze context");
     };
 
-    let (pagesize, ram_base, flash_base) = if context("nrf5340-net") {
+    let (_pagesize, ram_base, _flash_base) = if context("nrf5340-net") {
         (2048, 0x2100_0000, 0x0100_0000)
     } else if cfg!(feature = "nrf91-modem") {
         (4096, 0x2000_0000 + NRF91_MODEM_IPC_KB * 1024, 0)
@@ -136,7 +137,6 @@ fn write_memoryx() {
             .unwrap();
     let mut flash = rommel::Memory::new(chip);
     context_to_linker(&mut flash).expect("Unable to construct layout");
-
     // generate linker script
     let memory = flash
         .resolve_layout()
@@ -154,6 +154,7 @@ fn write_memoryx() {
     memory.to_cargo_outdir("memory.x").expect("wrote memory.x");
 }
 
+#[cfg(feature = "memory-x")]
 fn context_to_linker(flash: &mut rommel::Memory) -> Result<(), Box<dyn std::error::Error>> {
     println!(
         "CARGO_CFG_CONTEXT: {:?}",
@@ -166,20 +167,34 @@ fn context_to_linker(flash: &mut rommel::Memory) -> Result<(), Box<dyn std::erro
     #[cfg(feature = "embassy-boot")]
     {
         flash.add_section(app);
-        let layout = load_layout("embassy-boot.yaml")?;
+        let layout = load_layout_snippet("embassy-boot.yaml")?;
         flash.layout_mut().merge(layout);
     }
     #[cfg(not(feature = "embassy-boot"))]
     flash.add_section(app.set_boot(true));
+
+    let appdir = std::env::var("APPDIR").expect("Application directory not set");
+    let app_file = std::path::Path::new(&appdir).join("layout.yaml");
+    if let Ok(app_layout) = load_layout(&app_file) {
+        flash.layout_mut().merge(app_layout);
+    }
     Ok(())
 }
 
-fn load_layout(target: &str) -> Result<rommel::layout::Layout, Box<dyn std::error::Error>> {
+#[cfg(feature = "memory-x")]
+fn load_layout_snippet(target: &str) -> Result<rommel::layout::Layout, Box<dyn std::error::Error>> {
     let path = std::env::var("ROMMEL_SNIPPET_DIR").expect("Linker snippet directory not set");
     let target_path = std::path::Path::new(&path).join(target);
-    let reader = std::fs::File::open(&target_path)?;
+    load_layout(&target_path)
+}
+
+#[cfg(feature = "memory-x")]
+fn load_layout(
+    target: &std::path::Path,
+) -> Result<rommel::layout::Layout, Box<dyn std::error::Error>> {
+    let reader = std::fs::File::open(&target)?;
+    println!("cargo:rerun-if-changed={}", target.display());
     let sections: rommel::layout::Layout = yaml_serde::from_reader(reader)?;
-    println!("cargo:rerun-if-changed={}", target_path.display());
     Ok(sections)
 }
 

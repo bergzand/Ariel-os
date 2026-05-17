@@ -166,7 +166,7 @@ document-features = "0.2.8"
 fugit = { version = "0.3.7", default-features = false }
 heapless = { version = "0.9.1", default-features = false }
 ld-memory = { version = "0.2.9" }
-rommel = { path = "../rommel" }
+rommel = { git = "https://codeberg.org/bergzand/rommel.git", rev = "b5268d32f8736a192dfe0abbcbec31d79de5aa96" }
 log = { version = "0.4.20", default-features = false }
 once_cell = { version = "1.21.3", default-features = false, features = [
   "critical-section",

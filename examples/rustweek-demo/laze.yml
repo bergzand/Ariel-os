@@ -1,0 +1,12 @@
+apps:
+  - name: rustweek-demo
+    env:
+      global:
+        executor_stacksize_required:
+          - "16384"
+    selects:
+      - log
+      - network-config-ipv4-static
+      - coap-server
+      - coap-server-config-unprotected
+      - embassy-boot

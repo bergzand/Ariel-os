@@ -1,0 +1,55 @@
+[cargo]
+features = [
+    "ariel-os/coap-server-config-unprotected",
+    "ariel-os/liboscore-provide-assert",
+    "ariel-os/panic-printing",
+    "ariel-os/log",
+    "ariel-os/executor-thread",
+    "ariel-os/infini-core",
+    "ariel-os/hwrng",
+    "ariel-os/random",
+    "ariel-os/coap-transport-udp",
+    "ariel-os/coap",
+    "ariel-os/coap-server",
+    "ariel-os/tuntap",
+    "ariel-os/ipv4",
+    "ariel-os/network-config-ipv4-static",
+]
+
+[cargo.buildScripts]
+overrideCommand = [
+    "cargo",
+    "check",
+    "--features=ariel-os/coap-server-config-unprotected,ariel-os/liboscore-provide-assert,ariel-os/panic-printing,ariel-os/log,ariel-os/executor-thread,ariel-os/infini-core,ariel-os/hwrng,ariel-os/random,ariel-os/coap-transport-udp,ariel-os/coap,ariel-os/coap-server,ariel-os/tuntap,ariel-os/ipv4,ariel-os/network-config-ipv4-static",
+    "--message-format=json",
+]
+
+[cargo.extraEnv]
+APPDIR = "../../examples/suit-update"
+CARGO_BUILD_TARGET = "x86_64-unknown-linux-gnu"
+CARGO_TARGET_DIR = "../../build/bin/native/cargo"
+CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUNNER = "sh -c"
+CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS = '--cfg context="native" --cfg context="native-chip" --cfg context="ariel-os" --cfg context="default" -Clink-arg=-Wl,-znostart-stop-gc --cfg stable -Cembed-bitcode=yes -Clto=fat -Ccodegen-units=1 --cfg capability="hw/device-identity" --cfg getrandom_backend="custom"'
+CC = ""
+CFLAGS = ""
+CHIP_ROM_PAGE_COUNT = ""
+CHIP_ROM_PAGE_SIZE_BYTES = ""
+CHIP_ROM_START_ADDRESS = ""
+CONFIG_BOARD = "native"
+CONFIG_EXECUTOR_STACKSIZE = "32768"
+CONFIG_ISR_STACKSIZE = "2048"
+CONFIG_WIFI_NETWORK = "test-wifi"
+CONFIG_WIFI_PASSWORD = "test-password"
+LOG_LEVEL = ""
+OPENOCD_ARGS = ""
+ROMMEL_SNIPPET_DIR = "../../linker/snippets"
+RUSTFLAGS = '--cfg context="native" --cfg context="native-chip" --cfg context="ariel-os" --cfg context="default" -Clink-arg=-Wl,-znostart-stop-gc --cfg stable -Cembed-bitcode=yes -Clto=fat -Ccodegen-units=1 --cfg capability="hw/device-identity" --cfg getrandom_backend="custom"'
+SCRIPTS = "../../scripts"
+
+[check]
+allTargets = false
+command = "clippy"
+extraArgs = ["--features=ariel-os/coap-server-config-unprotected,ariel-os/liboscore-provide-assert,ariel-os/panic-printing,ariel-os/log,ariel-os/executor-thread,ariel-os/infini-core,ariel-os/hwrng,ariel-os/random,ariel-os/coap-transport-udp,ariel-os/coap,ariel-os/coap-server,ariel-os/tuntap,ariel-os/ipv4,ariel-os/network-config-ipv4-static"]
+
+[files]
+watcher = "server"

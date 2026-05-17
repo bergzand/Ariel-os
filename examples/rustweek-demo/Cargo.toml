@@ -1,0 +1,34 @@
+[package]
+name = "rustweek-demo"
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+ariel-os = { path = "../../src/ariel-os" }
+ariel-os-boards = { path = "../../src/ariel-os-boards" }
+coap-handler = "0.2.0"
+coap-handler-implementations = "0.6.1"
+coap-message = "0.3.2"
+coap-message-utils = "0.3.9"
+coap-message-implementations = "0.1.10"
+coap-numbers = "0.2"
+embassy-sync = { workspace = true }
+embedded-nal-coap = {version = "0.1.0-alpha.5"}
+embassy-nrf = { workspace = true }
+ariel-os-nrf = {workspace = true }
+embassy-boot = {version = "0.7.0" }
+embedded-storage-async = {workspace = true}
+embassy-embedded-hal = {workspace = true}
+
+heapless = { workspace = true }
+critical-section = { workspace = true }
+dress-up = { git = "https://github.com/ariel-os/dress-up.git", rev = "b67716323f1feb4a5ead967d60e497fff0bd1cb7", default-features = false }
+cose_minicbor = {version = "0.1.1", default-features = false, features = ["es256", "sha256", "suit-sha256-es256"]}
+minicbor = {version = "2.2.1", default-features = false}
+generic-array = { version = "1.3.5", default-features = false, features = ["const-default"] }
+uuid = { version = "1.23.1", default-features = false }
+coap-request = "0.2.0-alpha.2"
+
+[lints]
+workspace = true

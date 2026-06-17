@@ -76,47 +76,64 @@ fn main() {
 /// Panics if called outside of a known laze context.
 #[cfg(feature = "memory-x")]
 fn write_memoryx() {
-    use ld_memory::{Memory, MemorySection};
-    let (ram, flash) = if context("nrf51822-xxaa") {
-        (16, 256)
+    use ld_memory::MemorySection;
+
+    let rom_start = parse_dec_or_hex(
+        &std::env::var("CHIP_ROM_START_ADDRESS").expect("CHIP_ROM_START_ADDRESS env var not set"),
+    )
+    .expect("CHIP_ROM_START_ADDRESS is not a decimal or hex value");
+    let rom_page_size = parse_dec_or_hex(
+        &std::env::var("CHIP_ROM_PAGE_SIZE_BYTES")
+            .expect("CHIP_ROM_PAGE_SIZE_BYTES env var not set"),
+    )
+    .expect("CHIP_ROM_PAGE_SIZE_BYTES is not a decimal or hex value");
+    let rom_page_count = std::env::var("CHIP_ROM_PAGE_COUNT")
+        .expect("CHIP_ROM_PAGE_COUNT env var not set")
+        .parse::<u64>()
+        .expect("CHIP_ROM_PAGE_COUNT is not a decimal number");
+
+    let ram = if context("nrf51822-xxaa") {
+        16
     } else if context("nrf52832") {
-        (64, 256)
+        64
     } else if context("nrf52833") {
-        (128, 512)
+        128
     } else if context("nrf52840") {
-        (256, 1024)
+        256
     } else if context("nrf5340-app") {
-        (512, 1024)
+        512
     } else if context("nrf5340-net") {
-        (64, 256)
+        64
     } else if context_any(&["nrf9151", "nrf9160"]).is_some() {
         let ram = 256;
-        let flash = 1024;
         if cfg!(feature = "nrf91-modem") {
-            (ram - NRF91_MODEM_IPC_KB, flash)
+            ram - NRF91_MODEM_IPC_KB
         } else {
-            (ram, flash)
+            ram
         }
     } else {
         panic!("please set the MCU laze context");
     };
 
-    let (pagesize, ram_base, flash_base) = if context("nrf5340-net") {
-        (2048, 0x2100_0000, 0x0100_0000)
+    let ram_base = if context("nrf5340-net") {
+        0x2100_0000
     } else if cfg!(feature = "nrf91-modem") {
-        (4096, 0x2000_0000 + NRF91_MODEM_IPC_KB * 1024, 0)
+        0x2000_0000 + NRF91_MODEM_IPC_KB * 1024
     } else {
-        (4096, 0x2000_0000, 0)
+        0x2000_0000
     };
 
+    let chip = memsolve::chip::Chip::new(rom_page_size, rom_start, rom_page_size * rom_page_count)
+        .unwrap();
+    let mut flash = memsolve::Memory::new(chip);
+    context_to_linker(&mut flash).expect("Unable to construct layout");
+
     // generate linker script
-    let memory = Memory::new()
-        .add_section(MemorySection::new("RAM", ram_base, ram * 1024))
-        .add_section(
-            MemorySection::new("FLASH", flash_base, flash * 1024)
-                .pagesize(pagesize)
-                .from_env(),
-        );
+    let memory = flash
+        .resolve_layout()
+        .expect("Unable to resolve flash layout")
+        .into_memory()
+        .add_section(MemorySection::new("RAM", ram_base, ram * 1024));
 
     #[cfg(feature = "nrf91-modem")]
     let memory = memory.add_section(MemorySection::new(
@@ -126,6 +143,29 @@ fn write_memoryx() {
     ));
 
     memory.to_cargo_outdir("memory.x").expect("wrote memory.x");
+}
+
+/// Parses a number, supporting hexadecimal and decimal format.
+///
+/// # Errors
+///
+/// Returns ``std::num::ParseIntError`` when the number is neither decimal, nor hexadecimal.
+#[cfg(feature = "memory-x")]
+fn parse_dec_or_hex(input: &str) -> Result<u64, std::num::ParseIntError> {
+    if let Some(hex) = input.strip_prefix("0x") {
+        u64::from_str_radix(hex, 16)
+    } else {
+        input.parse::<u64>()
+    }
+}
+
+#[cfg(feature = "memory-x")]
+fn context_to_linker(flash: &mut memsolve::Memory) -> Result<(), memsolve::section::SectionError> {
+    let app = memsolve::section::Section::new("FLASH")?
+        .set_maximize(true)
+        .set_boot(true);
+    flash.add_section(app);
+    Ok(())
 }
 
 /// Returns the first of the given contexts that is in the current `cfg` contexts.

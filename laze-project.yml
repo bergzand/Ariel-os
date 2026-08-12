@@ -54,9 +54,9 @@ contexts:
           CARGO_TARGET_DIR=${relroot}/${build-dir}/bin/${builder}/cargo
           CONFIG_EXECUTOR_STACKSIZE=${CONFIG_EXECUTOR_STACKSIZE}
           CONFIG_ISR_STACKSIZE=${CONFIG_ISR_STACKSIZE}
-          CHIP_ROM_PAGE_COUNT=${CHIP_ROM_PAGE_COUNT}
-          CHIP_ROM_START_ADDRESS=${CHIP_ROM_START_ADDRESS}
-          CHIP_ROM_PAGE_SIZE_BYTES=${CHIP_ROM_PAGE_SIZE_BYTES}
+          CHIP_NVM_PAGE_COUNT=${CHIP_NVM_PAGE_COUNT}
+          CHIP_NVM_START_ADDRESS=${CHIP_NVM_START_ADDRESS}
+          CHIP_NVM_PAGE_SIZE_BYTES=${CHIP_NVM_PAGE_SIZE_BYTES}
       PROFILE: release
       PROFILE_DIR: $(if("${PROFILE}"=="dev", "debug", "${PROFILE}"))
       PROBE_RS_PROTOCOL: swd
@@ -209,8 +209,8 @@ contexts:
       - sw/benchmark
     env:
       # Most common flash page size
-      CHIP_ROM_PAGE_SIZE_BYTES: "4096"
-      CHIP_ROM_START_ADDRESS: "0x0"
+      CHIP_NVM_PAGE_SIZE_BYTES: "4096"
+      CHIP_NVM_START_ADDRESS: "0x0"
 
 
   - name: nrf51
@@ -220,7 +220,7 @@ contexts:
     provides:
       - has_hwrng
     env:
-      CHIP_ROM_PAGE_SIZE_BYTES: "1024"
+      CHIP_NVM_PAGE_SIZE_BYTES: "1024"
 
   - name: nrf51822-xxaa
     parent: nrf51
@@ -228,7 +228,7 @@ contexts:
       - ram-tiny
     env:
       PROBE_RS_CHIP: nrf51822_xxAA
-      CHIP_ROM_PAGE_COUNT: "256"
+      CHIP_NVM_PAGE_COUNT: "256"
 
   - name: nrf52
     parent: nrf
@@ -249,8 +249,8 @@ contexts:
       - has_ble_nrf
     env:
       PROBE_RS_CHIP: nrf52832_xxAA
-      CHIP_ROM_PAGE_SIZE_BYTES: "512"
-      CHIP_ROM_PAGE_COUNT: "128"
+      CHIP_NVM_PAGE_SIZE_BYTES: "512"
+      CHIP_NVM_PAGE_COUNT: "128"
 
   - name: nrf52833
     parent: nrf52
@@ -260,7 +260,7 @@ contexts:
       - has_ble_nrf
     env:
       PROBE_RS_CHIP: nrf52833_xxAA
-      CHIP_ROM_PAGE_COUNT: "128"
+      CHIP_NVM_PAGE_COUNT: "128"
 
   - name: nrf52840
     parent: nrf52
@@ -270,7 +270,7 @@ contexts:
       - has_ble_nrf
     env:
       PROBE_RS_CHIP: nrf52840_xxAA
-      CHIP_ROM_PAGE_COUNT: "256"
+      CHIP_NVM_PAGE_COUNT: "256"
 
   - name: nrf53
     parent: nrf
@@ -283,7 +283,7 @@ contexts:
       - has_storage_support
     env:
       PROBE_RS_CHIP: nrf5340_xxAA
-      CHIP_ROM_PAGE_COUNT: "128"
+      CHIP_NVM_PAGE_COUNT: "128"
 
   - name: nrf5340-net
     parent: nrf53
@@ -299,9 +299,9 @@ contexts:
       - usb
     env:
       PROBE_RS_CHIP: nrf5340_xxAA
-      CHIP_ROM_START_ADDRESS: "0x01000000"
-      CHIP_ROM_PAGE_COUNT: "128"
-      CHIP_ROM_PAGE_SIZE_BYTES: "2048"
+      CHIP_NVM_START_ADDRESS: "0x01000000"
+      CHIP_NVM_PAGE_COUNT: "128"
+      CHIP_NVM_PAGE_SIZE_BYTES: "2048"
     help: nRF5340 Network Core support
 
   - name: nrf91
@@ -313,7 +313,7 @@ contexts:
       # Tested using the ppk2 in ampere mode on the Thingy:91 X and nrf9160dk.
       - ?nrf91-modem
     env:
-      CHIP_ROM_PAGE_COUNT: "256"
+      CHIP_NVM_PAGE_COUNT: "256"
 
   - name: nrf9160
     parent: nrf91

@@ -80,19 +80,19 @@ fn main() {
 #[cfg(feature = "memory-x")]
 fn write_memoryx() {
     let rom_start = parse_dec_or_hex(
-        &env_var_and_rerun_if_changed("CHIP_ROM_START_ADDRESS")
-            .expect("CHIP_ROM_START_ADDRESS env var not set"),
+        &env_var_and_rerun_if_changed("CHIP_NVM_START_ADDRESS")
+            .expect("CHIP_NVM_START_ADDRESS env var not set"),
     )
-    .expect("CHIP_ROM_START_ADDRESS is not a decimal or hex value");
+    .expect("CHIP_NVM_START_ADDRESS is not a decimal or hex value");
     let rom_page_size = parse_dec_or_hex(
-        &env_var_and_rerun_if_changed("CHIP_ROM_PAGE_SIZE_BYTES")
-            .expect("CHIP_ROM_PAGE_SIZE_BYTES env var not set"),
+        &env_var_and_rerun_if_changed("CHIP_NVM_PAGE_SIZE_BYTES")
+            .expect("CHIP_NVM_PAGE_SIZE_BYTES env var not set"),
     )
-    .expect("CHIP_ROM_PAGE_SIZE_BYTES is not a decimal or hex value");
-    let rom_page_count = env_var_and_rerun_if_changed("CHIP_ROM_PAGE_COUNT")
-        .expect("CHIP_ROM_PAGE_COUNT env var not set")
+    .expect("CHIP_NVM_PAGE_SIZE_BYTES is not a decimal or hex value");
+    let rom_page_count = env_var_and_rerun_if_changed("CHIP_NVM_PAGE_COUNT")
+        .expect("CHIP_NVM_PAGE_COUNT env var not set")
         .parse::<u64>()
-        .expect("CHIP_ROM_PAGE_COUNT is not a decimal number");
+        .expect("CHIP_NVM_PAGE_COUNT is not a decimal number");
 
     let chip = memsolve::chip::Chip::new(rom_page_size, rom_start, rom_page_size * rom_page_count)
         .unwrap();

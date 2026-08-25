@@ -115,7 +115,7 @@ fn write_memoryx() {
     memory.to_cargo_outdir("memory.x").expect("wrote memory.x");
 }
 
-/// Generates the nrf flash layout.
+/// Generates the nrf nvm layout.
 ///
 /// # Panics
 /// Panics if called outside of a known laze context.
@@ -192,8 +192,6 @@ fn parse_dec_or_hex(input: &str) -> Result<u64, std::num::ParseIntError> {
     clippy::missing_panics_doc,
     reason = "Panic only happens with incorrect section names"
 )]
-fn flash_section() -> memsolve::section::Section<()> {
-    memsolve::section::Section::new("FLASH")
-        .unwrap()
-        .set_maximize(true)
+fn flash_section() -> Section<()> {
+    Section::new("FLASH").unwrap().set_maximize(true)
 }

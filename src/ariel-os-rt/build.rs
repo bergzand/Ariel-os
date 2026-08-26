@@ -7,6 +7,8 @@ use ariel_os_buildutils::{
 
 #[cfg(feature = "memory-x")]
 use ld_memory::MemorySection;
+#[cfg(feature = "memory-x")]
+use memsolve::section::Section;
 
 // 32 KiB recommended by [nrf-modem](https://github.com/diondokter/nrf-modem?tab=readme-ov-file#memory)
 #[allow(dead_code, reason = "only used when the feature is enabled")]

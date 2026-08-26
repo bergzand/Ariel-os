@@ -256,16 +256,9 @@ fn gen_esp_partition_table(mut memory: memsolve::esp::EspMemory) {
             .set_address_align(0x10000)
             .add_esp_metadata(Type::App, AppType::Factory),
     );
-    memory.add_section(
-        Section::new("storage")
-            .unwrap()
-            .set_size(0x1000)
-            .add_esp_metadata(Type::Data, DataType::Undefined),
-    );
     let layout = memory.resolve_layout().unwrap();
     let partition_table = layout.into_esp_partition().to_csv().unwrap();
     let path = &PathBuf::from(env::var_os("ESP_PARTITION_FILE").unwrap());
-    println!("path: {path:?}");
     std::fs::write(path, partition_table).unwrap();
     rerun_if_changed(path.to_str().unwrap());
 }

@@ -1,5 +1,6 @@
 use ariel_os::hal::{i2c, peripherals};
 
+
 #[cfg(any(context = "nrf52840"))]
 pub type TempI2c = i2c::controller::TWISPI1;
 #[cfg(any(context = "nrf52840"))]

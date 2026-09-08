@@ -7,6 +7,8 @@ fn block_opt_val(szx: u8, num: u32) -> u32 {
 
 pub trait OptionMessageWriter: MinimalWritableMessage {
     fn add_option_uri_path(&mut self, path: &str) -> Result<(), Self::AddOptionError>;
+    fn add_option_uri_query(&mut self, path: &str) -> Result<(), Self::AddOptionError>;
+    fn add_option_content_format(&mut self, content_format: u16) -> Result<(), Self::AddOptionError>;
 
     fn add_option_block2(&mut self, szx: u8, num: u32) -> Result<(), Self::AddOptionError>;
 
@@ -33,6 +35,14 @@ where
     fn add_option_block1(&mut self, szx: u8, num: u32) -> Result<(), Self::AddOptionError> {
         let val: u32 = block_opt_val(szx, num);
         self.add_option_uint(option::BLOCK1.into(), val)
+    }
+
+    fn add_option_uri_query(&mut self, query: &str) -> Result<(), Self::AddOptionError> {
+        self.add_option_str(option::URI_QUERY.into(), query)
+    }
+
+    fn add_option_content_format(&mut self, content_format: u16) -> Result<(), Self::AddOptionError> {
+        self.add_option_uint(option::CONTENT_FORMAT.into(), content_format)
     }
 }
 

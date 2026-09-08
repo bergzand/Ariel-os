@@ -44,7 +44,7 @@ $ aiocoap-client coap://10.42.0.61/suit -m PUT --payload-initial-szx 3 --payload
 #### Obtain the binary code
 
 ```
-objcopy -Obinary build/bin/nrf52840dk/cargo/thumbv7em-none-eabihf/release/suit-update suit-update.bin
+objcopy -Obinary build/bin/nrf52840dk/cargo/thumbv7em-none-eabihf/release/rustweek-demo rustweek-demo.bin
 ```
 
 Make sure the binary can be hosted by the aiocoap-fileserver
@@ -64,7 +64,7 @@ Template
                 "algorithm-id": "sha256",
                 "digest-bytes": "8894cc19182246c801a1c1581f9f35de1fd233dc15690ebfe446e730d604dfd7"
             },
-            "uri": "suit_update.bin",
+            "uri": "rustweek-demo.bin",
             "vendor-id" : "019c9a95-f6cb-71a7-a0a6-aac148fc4743",
             "class-id" : "019c9a96-347b-7d98-acc9-b90117f4a665",
             "install-on-download" : true
@@ -72,6 +72,8 @@ Template
     ]
 }
 ```
+
+Update the digest, check the vendor and class id
 
 Create:
 ```

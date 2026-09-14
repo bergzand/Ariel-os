@@ -26,6 +26,7 @@ members = [
   "src/ariel-os-sensors-utils",
   "src/ariel-os-stm32",
   "src/ariel-os-storage",
+  "src/ariel-os-update-storage",
   "src/lib/coapcore",
   "src/lib/rbi",
   "src/lib/ringbuffer",

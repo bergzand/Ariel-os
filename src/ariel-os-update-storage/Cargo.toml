@@ -6,6 +6,10 @@ rust-version.workspace = true
 license.workspace = true
 
 [dependencies]
+ariel-os-hal = { workspace = true, features = ["storage"] }
+embassy-sync = { workspace = true }
+embedded-storage-async = { workspace = true }
+portable-atomic = { workspace = true }
 
 [lints]
 workspace = true

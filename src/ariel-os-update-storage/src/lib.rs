@@ -1,62 +1,90 @@
 #![cfg_attr(not(test), no_std)]
 // #![deny(missing_docs)]
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
-#[non_exhaustive]
-pub enum StorageBackend {
-    Nvm,
-    // Ram,
-    // Filesystem,
-}
+mod rt;
+mod storage;
 
-// NOTE: not to be confused with a SUIT Slot (which refers to a range within a SUIT Component).
-#[derive(Debug, Copy, Clone)]
-pub struct UpdateSlot<'id> {
-    storage_backend: StorageBackend,
-    // Opaque.
-    // NOTE: This can be constructed from a SUIT Component Identifier and a SUIT Slot by concatenating them.
-    id: &'id [u8],
-}
+use embedded_storage_async::nor_flash::{NorFlash, ReadNorFlash};
+use portable_atomic::{AtomicUsize, Ordering};
 
-impl<'id> UpdateSlot<'id> {
-    #[must_use]
-    pub fn new(storage_backend: StorageBackend, id: &'id [u8]) -> Self {
-        Self {
-            storage_backend,
-            id,
-        }
-    }
+pub use rt::{StorageBackend, UpdateSlot};
 
-    pub fn storage_backend(&self) -> StorageBackend {
-        self.storage_backend
-    }
-
-    pub fn id(&self) -> &'id [u8] {
-        self.id
-    }
-}
+// TODO: Size this depending on the device partitions. Currently this is only a reasonable maximum
+// value.
+const UPDATE_SLOT_COUNT: usize = 3;
+// Counts the bytes written in each update slot.
+static BYTES_WRITTEN: [AtomicUsize; UPDATE_SLOT_COUNT] =
+    [const { AtomicUsize::new(0) }; UPDATE_SLOT_COUNT];
 
 /// Reads the given update slot, starting from the offset (within the slot),
 /// for the given length.
 pub async fn read(update_slot: UpdateSlot<'_>, offset: u32, buf: &mut [u8]) -> Result<(), Error> {
-    todo!();
+    let address = update_slot_to_address(update_slot, offset)?
+        .try_into()
+        .map_err(|_| Error::Storage)?;
+
+    let flash = &mut storage::STORAGE.get().await.lock().await.flash;
+
+    flash.read(address, buf).await.map_err(|_| Error::Storage)
 }
 
 /// Writes the given payload to an update slot, at the given offset
 /// within that slot.
 // NOTE: `bytes` is a subslice of a SUIT payload.
 pub async fn write(bytes: &[u8], update_slot: UpdateSlot<'_>, offset: u32) -> Result<(), Error> {
-    todo!();
+    if capacity(update_slot)? < offset + bytes.len() {
+        return Err(Error::InvalidByteSliceLength);
+    }
+
+    let address = update_slot_to_address(update_slot, offset)?
+        .try_into()
+        .map_err(|_| Error::Storage)?;
+
+    let flash = &mut storage::STORAGE.get().await.lock().await.flash;
+
+    flash
+        .write(address, bytes)
+        .await
+        .map_err(|_| Error::Storage)?;
+
+    let update_slot_index: usize = update_slot.index()?;
+    // When the write operation succeeds, all bytes have been written.
+    let bytes_written = bytes.len();
+
+    // TODO(ordering): ordering can likely be weaker as this value only gets *incremented*.
+    BYTES_WRITTEN[update_slot_index].add(bytes_written, Ordering::SeqCst);
+
+    Ok(())
 }
 
 /// Returns the length of the payload written since the last reboot or the last update.
 pub fn len(update_slot: UpdateSlot<'_>) -> Result<u32, Error> {
-    todo!();
+    let update_slot_index: usize = update_slot.index()?;
+
+    Ok(BYTES_WRITTEN[update_slot_index].load(Ordering::Acquire))
 }
 
 /// Returns the capacity of the given update slot.
 pub fn capacity(update_slot: UpdateSlot<'_>) -> Result<u32, Error> {
-    todo!();
+     let range = update_slot.range().map_err(|source| match source {
+         rt::Error::InvalidSlot => Error::InvalidSlot,
+     })?;
+    Ok(range.len())
+}
+
+fn update_slot_to_address(update_slot: UpdateSlot<'_>, offset: u32) -> Result<u32, Error> {
+    let range = update_slot.range()?;
+
+    if offset >= range.end {
+        return Err(Error::OffsetOutOfBounds);
+    }
+
+    let address = range
+        .start
+        .checked_add(offset)
+        .ok_or(Error::OffsetOutOfBounds)?;
+
+    Ok(address)
 }
 
 #[derive(Debug)]
@@ -69,6 +97,14 @@ pub enum Error {
     OffsetOutOfBounds,
     /// The byte slice given is too large for the remaining space in the slot (starting at the offset).
     InvalidByteSliceLength,
+}
+
+impl From<rt::Error> for Error {
+    fn from(err: rt::Error) -> Self {
+        match err {
+            rt::Error::InvalidSlot => Error::InvalidSlot,
+        }
+    }
 }
 
 impl core::fmt::Display for Error {

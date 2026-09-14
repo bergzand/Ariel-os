@@ -657,6 +657,12 @@ dependencies = [
 [[package]]
 name = "ariel-os-update-storage"
 version = "0.5.0"
+dependencies = [
+ "ariel-os-hal",
+ "embassy-sync 0.7.2",
+ "embedded-storage-async",
+ "portable-atomic",
+]
 
 [[package]]
 name = "ariel-os-utils"

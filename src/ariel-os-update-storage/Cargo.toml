@@ -7,6 +7,7 @@ license.workspace = true
 
 [dependencies]
 ariel-os-hal = { workspace = true, features = ["storage"] }
+ariel-os-rt = { workspace = true, features = ["memory-x"] }
 embassy-sync = { workspace = true }
 embedded-storage-async = { workspace = true }
 portable-atomic = { workspace = true }

@@ -39,25 +39,17 @@ impl<'id> UpdateSlot<'id> {
 
 impl UpdateSlot<'_> {
     pub fn range(&self) -> Result<Range<u32>, Error> {
-        // Based on:
-        // <https://github.com/embassy-rs/embassy/blob/2cad35b28c29a1a846cb841e55a973e5155609d8/examples/boot/application/nrf/memory.x>.
-
-        #[cfg(not(context = "nrf52840"))]
-        compile_error!("only the nRF52840 is currently supported");
-
-        // TODO: this should be read from the linker-injected symbols.
+        // TODO: change/document the Component Identifiers.
         match self.id {
             // SUIT Component Identifier `[h00]`, SUIT Slot 0.
             [0x00, 0x00] => {
-                // FLASH.
-                Ok(range_from_start_len(0x00007000, 64 * 1024))
+                // ACTIVE.
+                Ok(ariel_os_rt::memory::sections::ACTIVE)
             }
             // SUIT Component Identifier `[h00]`, SUIT Slot 1.
             [0x00, 0x01] => {
                 // DFU.
-                // The section is 64 KiB + one page for the power-safe copy used by the bootloader,
-                // so the update slot itself is 64 KiB.
-                Ok(range_from_start_len(0x00017000, 64 * 1024))
+                Ok(ariel_os_rt::memory::sections::DFU)
             }
             _ => Err(Error::InvalidSlot),
         }
@@ -68,11 +60,14 @@ impl UpdateSlot<'_> {
         match self.id {
             // SUIT Component Identifier `[h00]`, SUIT Slot 0.
             [0x00, 0x00] => {
-                // FLASH.
+                // ACTIVE.
                 Ok(0)
             }
             // SUIT Component Identifier `[h00]`, SUIT Slot 1.
-            [0x00, 0x01] => Ok(1),
+            [0x00, 0x01] => {
+                // DFU.
+                Ok(1)
+            }
             _ => Err(Error::InvalidSlot),
         }
     }

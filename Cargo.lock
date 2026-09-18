@@ -633,6 +633,21 @@ dependencies = [
 ]
 
 [[package]]
+<<<<<<< Updated upstream
+=======
+name = "ariel-os-suit"
+version = "0.5.0"
+dependencies = [
+ "ariel-os",
+ "ariel-os-update-storage",
+ "cose_minicbor",
+ "dress-up",
+ "heapless 0.9.3",
+ "minicbor",
+]
+
+[[package]]
+>>>>>>> Stashed changes
 name = "ariel-os-threads"
 version = "0.5.0"
 dependencies = [
@@ -1473,6 +1488,23 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.114",
+]
+
+[[package]]
+name = "cose_minicbor"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e9ec26940b5faee22a6a5802087cc1d0eb90d0f0d7dfecdd8232159b012f21d4"
+dependencies = [
+ "heapless 0.9.3",
+ "hkdf",
+ "minicbor",
+ "minicbor-adapters",
+ "p256",
+ "sha2",
+ "sha3",
+ "suit_cbor",
+ "thiserror",
 ]
 
 [[package]]
@@ -5921,6 +5953,27 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "13c2bddecc57b384dee18652358fb23172facb8a2c51ccc10d74c157bdea3292"
 
 [[package]]
+<<<<<<< Updated upstream
+=======
+name = "suit-memory"
+version = "0.0.0"
+dependencies = [
+ "ariel-os",
+ "ariel-os-suit",
+]
+
+[[package]]
+name = "suit_cbor"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8dd16ad3caa7dc09d4a4c0c585968494ef61d260600119ba79094c047863552e"
+dependencies = [
+ "minicbor",
+ "thiserror",
+]
+
+[[package]]
+>>>>>>> Stashed changes
 name = "switch-hal"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"

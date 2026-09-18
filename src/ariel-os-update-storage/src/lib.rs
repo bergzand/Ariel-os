@@ -32,7 +32,9 @@ pub async fn read(update_slot: UpdateSlot<'_>, offset: u32, buf: &mut [u8]) -> R
 /// within that slot.
 // NOTE: `bytes` is a subslice of a SUIT payload.
 pub async fn write(bytes: &[u8], update_slot: UpdateSlot<'_>, offset: u32) -> Result<(), Error> {
-    if capacity(update_slot)? < offset + bytes.len() {
+    let len = u32::try_from(bytes.len()).unwrap();
+
+    if capacity(update_slot)? < offset + len {
         return Err(Error::InvalidByteSliceLength);
     }
 
@@ -42,6 +44,10 @@ pub async fn write(bytes: &[u8], update_slot: UpdateSlot<'_>, offset: u32) -> Re
 
     let flash = &mut storage::STORAGE.get().await.lock().await.flash;
 
+    flash
+        .erase(address, address + len)
+        .await
+        .map_err(|_| Error::Storage)?;
     flash
         .write(address, bytes)
         .await
